@@ -1,10 +1,13 @@
 package com.example.readcsvfilexample;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.readcsvfilexample.adapter.HealthyAdapter;
 import com.example.readcsvfilexample.model.HealthyData;
 
 import java.io.BufferedReader;
@@ -18,12 +21,24 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "_MainActivity";
 
+    private HealthyAdapter adapter;
+    private RecyclerView rvData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initRecyclerview();
         readHealthyData();
+
+    }
+
+    private void initRecyclerview() {
+        rvData = findViewById(R.id.recyclerview);
+        rvData.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new HealthyAdapter(this);
+        rvData.setAdapter(adapter);
     }
 
     private List<HealthyData> healthyDataList = new ArrayList<>();
@@ -50,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "readHealthyData: Just Created " + sample);
             }
+            healthyDataList.remove(0);
+            adapter.setDataList(healthyDataList);
         } catch (IOException e) {
             Log.d(TAG, "readHealthyData: " + e.getMessage());
         }
